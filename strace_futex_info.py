@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import sys
-from pprint import pprint
 from datetime import datetime
 
 linenum = 0
@@ -76,8 +75,8 @@ with open(sys.argv[1]) as stracef:
 
 start = datetime.fromtimestamp(float(start_time))
 end = datetime.fromtimestamp(float(end_time))
-time = end - start
-print("Trace start:", start, "Trace end:", end, "Duration:", time, "\n")
+elapsed_time = end - start
+print("Trace start:", start, "Trace end:", end, "Duration:", elapsed_time, "\n")
 
 print("futex opcodes:")
 print("call count:", call_count)
@@ -90,4 +89,5 @@ print("\nReturned:", return_count)
 for retcode, count in retcodes.items():
     print(retcode, count)
 print("Total times:", total_time, "Min:", f"{minret:.8f}", "Max:", f"{maxret:.8f}", "Average:", f"{(total_time/return_count):.8f}")
+print("Calls/sec:", call_count / elapsed_time.seconds)
 print()

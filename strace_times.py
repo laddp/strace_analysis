@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys
 from pprint import pprint
-from datetime import date, datetime
+from datetime import datetime
 
 calls = {}
 call_count = 0
@@ -43,9 +43,10 @@ with open(sys.argv[1]) as stracef:
 
 start = datetime.fromtimestamp(float(start_time))
 end = datetime.fromtimestamp(float(end_time))
-time = end - start
-print("Trace start:", start, "Trace end:", end, "Duration:", time, "\n")
+elapsed_time = end - start
+print("Trace start:", start, "Trace end:", end, "Duration:", elapsed_time, "\n")
 
 calls = dict(sorted(calls.items(), key=lambda item: item[1][0], reverse=True))
+print("call", "count", "total_time", "min", "max", "avg", "per_sec")
 for call, call_data in calls.items():
-    print(call, call_data[0], f"{call_data[1]:.8f}", f"{call_data[2]:.8f}", f"{call_data[3]:.8f}", f"{(call_data[1]/call_data[0]):.8f}")
+    print(call, call_data[0], f"{call_data[1]:.8f}", f"{call_data[2]:.8f}", f"{call_data[3]:.8f}", f"{(call_data[1]/call_data[0]):.8f}", f"{(call_data[0]/elapsed_time.seconds):.2f}")
