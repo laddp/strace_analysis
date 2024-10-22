@@ -1,16 +1,24 @@
 #!/usr/bin/python
 import sys
 from pprint import pprint
+from datetime import date, datetime
 
 calls = {}
 call_count = 0
 linenum = 0
+
+start_time = 0
+end_time = 0
 
 resumed_string = " resumed>) = "
 
 with open(sys.argv[1]) as stracef:
     for line in stracef:
         linenum += 1
+        if linenum == 1:
+            start_time = line.split()[1]
+        end_time = line.split()[1]
+
         if 'resumed' in line:
             try:
                 call = line.split()[3]
@@ -33,7 +41,11 @@ with open(sys.argv[1]) as stracef:
                 print("parse error at line", linenum)
                 print(line)
 
-#pprint(calls)
+start = datetime.fromtimestamp(float(start_time))
+end = datetime.fromtimestamp(float(end_time))
+time = end - start
+print("Trace start:", start, "Trace end:", end, "Duration:", time, "\n")
+
 calls = dict(sorted(calls.items(), key=lambda item: item[1][0], reverse=True))
 for call, call_data in calls.items():
     print(call, call_data[0], f"{call_data[1]:.8f}", f"{call_data[2]:.8f}", f"{call_data[3]:.8f}", f"{(call_data[1]/call_data[0]):.8f}")
