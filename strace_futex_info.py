@@ -8,6 +8,7 @@ end_time = 0
 
 call_count = 0
 ops = {}
+waits = {}
 timed_wait = 0
 untimed_wait = 0
 
@@ -42,6 +43,11 @@ with open(sys.argv[1]) as stracef:
                     untimed_wait += 1
                 else:
                     timed_wait += 1
+                    wait_time = line.split('{')[1].split('}')[0][:-1]
+                    if wait_time in waits:
+                        waits[wait_time] = waits[wait_time] + 1
+                    else:
+                        waits[wait_time] = 1
 
         if 'resumed' in line:
             try:
@@ -84,6 +90,9 @@ ops = dict(sorted(ops.items(), key=lambda item: item[1], reverse=True))
 for op, count in ops.items():
     print(op, count, f"{(count/call_count * 100):.1f}%")
 print("Timed waits:", timed_wait, "Untimed waits:", untimed_wait)
+waits = dict(sorted(waits.items(), key=lambda item: item[1], reverse=True))
+for wait, count in waits.items():
+    print(wait, "Count:", count)
 
 print("\nReturned:", return_count)
 for retcode, count in retcodes.items():
